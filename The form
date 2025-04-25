@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إعداد الدروس - وزارة التربية والتعليم قطر</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      padding: 20px;
+      line-height: 1.6;
+      direction: rtl;
+    }
+    h1, h3 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto;
+      max-width: 150px;
+      padding: 10px 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 10px 20px;
+      background: #6c757d;
+      color: white;
+      cursor: pointer;
+      margin: 0 5px;
+      border-radius: 5px;
+    }
+    .tab.active {
+      background: #3498db;
+    }
+    .tab-content {
+      display: none;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .form-section {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    button.secondary {
+      background-color: #6c757d;
+    }
+    button.secondary:hover {
+      background-color: #5a6268;
+    }
+    button.success {
+      background-color: #28a745;
+    }
+    button.success:hover {
+      background-color: #218838;
+    }
+    .button-group {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .error-message {
+      color: #e74c3c;
+      margin: 10px 0;
+      font-size: 14px;
+      text-align: center;
+    }
+    .plan-card {
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #output {
+      margin-top: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #output ol {
+      padding-right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAQSURBVHgBAW/5A////wAAAAAABBpGZwAAAABJRU5ErkJggg==" alt="وزارة التربية والتعليم قطر" class="logo">
+    <h1>نظام الإعداد اليومي للدروس</h1>
+    
+    <div class="tabs">
+      <div class="tab active" onclick="openTab('create-tab')">خطة جديدة</div>
+      <div class="tab" onclick="openTab('saved-tab')">خططي</div>
+    </div>
+
+    <div id="create-tab" class="tab-content active">
+      <div class="form-section">
+        <h3>المعلومات الأساسية</h3>
+        <label for="academicYear">العام الأكاديمي:</label>
+        <input type="text" id="academicYear" placeholder="مثال: 1446/1447">
+        <label for="date">التاريخ:</label>
+        <input type="date" id="date">
+        <label for="subject">المادة:</label>
+        <select id="subject">
+          <option value="">اختر المادة</option>
+          <option value="اللغة العربية">اللغة العربية</option>
+          <option value="الرياضيات">الرياضيات</option>
+          <option value="العلوم">العلوم</option>
+          <option value="الدراسات الاجتماعية">الدراسات الاجتماعية</option>
+          <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+          <option value="التربية الإسلامية">التربية الإسلامية</option>
+        </select>
+        <label for="grade">الصف:</label>
+        <input type="text" id="grade" placeholder="مثال: الصف الخامس">
+        <label for="lessonTitle">عنوان الدرس:</label>
+        <input type="text" id="lessonTitle" placeholder="مثال: الضرب في الأعداد العشرية">
+        <label for="aiPrompt">وصف الدرس:</label>
+        <input type="text" id="aiPrompt" placeholder="مثال: تدريس الكسور للصف الخامس">
+      </div>
+
+      <div class="form-section">
+        <h3>الأهداف التعليمية</h3>
+        <label for="objectives">أدخل 3 أهداف على الأقل:</label>
+        <textarea id="objectives" rows="6" placeholder="مثال:\n1. أن يفهم الطالب مفهوم الكسور\n2. أن يحل الطالب مسائل جمع الكسور\n3. أن يطبق الطالب المعرفة في مواقف حياتية"></textarea>
+        <div class="button-group">
+          <button onclick="generateLocalObjectives()" class="secondary">توليد الأهداف</button>
+          <button onclick="autoFillFields()" class="secondary">تعبئة تلقائية</button>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>تفاصيل الدرس</h3>
+        <label for="activities">الأنشطة:</label>
+        <textarea id="activities" rows="4" placeholder="مثال: شرح نظري، حل تمارين جماعية"></textarea>
+        <label for="resources">الموارد:</label>
+        <input type="text" id="resources" placeholder="مثال: كتاب الطالب، لوحة ذكية">
+        <label for="assessment">التقييم:</label>
+        <input type="text" id="assessment" placeholder="مثال: اختبار قصير، مراجعة شفهية">
+        <label for="homework">الواجب المنزلي:</label>
+        <input type="text" id="homework" placeholder="مثال: حل 5 مسائل">
+      </div>
+
+      <div class="button-group">
+        <button onclick="generatePlan()">إنشاء الخطة</button>
+        <button onclick="savePlan()" class="success">حفظ الخطة</button>
+        <button onclick="resetForm()" class="secondary">مسح النموذج</button>
+      </div>
+
+      <div id="output"></div>
+    </div>
+
+    <div id="saved-tab" class="tab-content">
+      <h3>الخطط المحفوظة</h3>
+      <div id="savedPlans"></div>
+    </div>
+
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+  </div>
+
+  <script>
+    // قوالب أهداف احتياطية
+    const fallbackObjectives = {
+      'اللغة العربية': [
+        'أن يفهم الطالب قواعد {title} ويطبقها في كتابة نصوص.',
+        'أن يحلل الطالب نصوصًا تحتوي على {title}.',
+        'أن يناقش الطالب أهمية {title} في التواصل اليومي.'
+      ],
+      'الرياضيات': [
+        'أن يفهم الطالب مفهوم {title} من خلال أمثلة عملية.',
+        'أن يحل الطالب مسائل تتعلق بـ {title} بدقة.',
+        'أن يطبق الطالب {title} في سياقات حياتية.'
+      ],
+      'العلوم': [
+        'أن يتعرف الطالب على مكونات {title}.',
+        'أن يشرح الطالب وظيفة {title} باستخدام أمثلة.',
+        'أن يجري الطالب تجربة بسيطة تتعلق بـ {title}.'
+      ],
+      'الدراسات الاجتماعية': [
+        'أن يتعرف الطالب على الأحداث الرئيسية لـ {title}.',
+        'أن يناقش الطالب أهمية {title} في الهوية الوطنية.',
+        'أن يكتب الطالب فقرة عن {title}.'
+      ],
+      'اللغة الإنجليزية': [
+        'أن يتعلم الطالب استخدام {title} في جمل بسيطة.',
+        'أن يميز الطالب بين أنواع {title} المختلفة.',
+        'أن يكتب الطالب نصًا قصيرًا باستخدام {title}.'
+      ],
+      'التربية الإسلامية': [
+        'أن يفهم الطالب أحكام {title}.',
+        'أن يناقش الطالب أهمية {title} في الحياة اليومية.',
+        'أن يطبق الطالب قواعد {title} في سلوكه.'
+      ]
+    };
+
+    // قوالب تعبئة تلقائية
+    const suggestionTemplates = {
+      'اللغة العربية': {
+        academicYear: '1446/1447',
+        date: new Date().toISOString().split('T')[0],
+        subject: 'اللغة العربية',
+        grade: 'الصف الخامس',
+        lessonTitle: 'الجملة الاسمية',
+        objectives: '1. أن يفهم الطالب مكونات الجملة الاسمية.\n2. أن يكتب الطالب جملًا اسمية صحيحة.\n3. أن يميز الطالب بين الجملة الاسمية والفعلية.',
+        activities: 'شرح قواعد الجملة الاسمية، حل تمارين، كتابة فقرة.',
+        resources: 'كتاب اللغة العربية، لوح ذكي.',
+        assessment: 'اختبار قصير، مراجعة شفهية.',
+        homework: 'كتابة خمس جمل اسمية.'
+      },
+      'الرياضيات': {
+        academicYear: '1446/1447',
+        date: new Date().toISOString().split('T')[0],
+        subject: 'الرياضيات',
+        grade: 'الصف الخامس',
+        lessonTitle: 'الكسور',
+        objectives: '1. أن يفهم الطالب مفهوم الكسور.\n2. أن يحل الطالب مسائل جمع وطرح الكسور.\n3. أن يطبق الطالب الكسور في مسائل حياتية.',
+        activities: 'شرح الكسور، حل تمارين جماعية.',
+        resources: 'كتاب الرياضيات، أوراق عمل.',
+        assessment: 'حل مسائل، اختبار قصير.',
+        homework: 'حل خمس مسائل عن الكسور.'
+      },
+      'العلوم': {
+        academicYear: '1446/1447',
+        date: new Date().toISOString().split('T')[0],
+        subject: 'العلوم',
+        grade: 'الصف الخامس',
+        lessonTitle: 'دورة الماء',
+        objectives: '1. أن يتعرف الطالب على مراحل دورة الماء.\n2. أن يشرح الطالب أهمية دورة الماء.\n3. أن يربط الطالب دورة الماء بالبيئة.',
+        activities: 'شرح دورة الماء، رسم بياني.',
+        resources: 'كتاب العلوم، فيديو تعليمي.',
+        assessment: 'اختبار قصير، مناقشة جماعية.',
+        homework: 'رسم دورة الماء.'
+      },
+      'الدراسات الاجتماعية': {
+        academicYear: '1446/1447',
+        date: new Date().toISOString().split('T')[0],
+        subject: 'الدراسات الاجتماعية',
+        grade: 'الصف الخامس',
+        lessonTitle: 'تاريخ قطر',
+        objectives: '1. أن يتعرف الطالب على الأحداث الرئيسية في تاريخ قطر.\n2. أن يناقش الطالب أهمية تاريخ قطر.\n3. أن يكتب الطالب فقرة عن تاريخ قطر.',
+        activities: 'شرح تاريخي، مناقشة جماعية.',
+        resources: 'كتاب الدراسات، صور تاريخية.',
+        assessment: 'كتابة فقرة، اختبار قصير.',
+        homework: 'كتابة فقرة عن حدث تاريخي.'
+      },
+      'اللغة الإنجليزية': {
+        academicYear: '1446/1447',
+        date: new Date().toISOString().split('T')[0],
+        subject: 'اللغة الإنجليزية',
+        grade: 'الصف الخامس',
+        lessonTitle: 'Present Simple',
+        objectives: '1. أن يتعلم الطالب استخدام زمن المضارع البسيط.\n2. أن يكتب الطالب جملًا باستخدام المضارع البسيط.\n3. أن يناقش الطالب استخدامات المضارع البسيط.',
+        activities: 'شرح قواعد، كتابة جمل.',
+        resources: 'كتاب الإنجليزية، لوح ذكي.',
+        assessment: 'اختبار قصير، مناقشة شفهية.',
+        homework: 'كتابة خمس جمل بالمضارع البسيط.'
+      },
+      'التربية الإسلامية': {
+        academicYear: '1446/1447',
+        date: new Date().toISOString().split('T')[0],
+        subject: 'التربية الإسلامية',
+        grade: 'الصف الخامس',
+        lessonTitle: 'الصلاة',
+        objectives: '1. أن يفهم الطالب أحكام الصلاة.\n2. أن يناقش الطالب أهمية الصلاة.\n3. أن يطبق الطالب أحكام الصلاة.',
+        activities: 'شرح أحكام، مناقشة جماعية.',
+        resources: 'كتاب التربية الإسلامية، لوح ذكي.',
+        assessment: 'اختبار قصير، مناقشة.',
+        homework: 'كتابة فقرة عن أهمية الصلاة.'
+      }
+    };
+
+    // دالة توليد الأهداف المحلية
+    function generateLocalObjectives() {
+      try {
+        console.log('بدء توليد الأهداف المحلية...');
+        const lessonTitle = document.getElementById('lessonTitle')?.value.trim();
+        const subject = document.getElementById('subject')?.value;
+        
+        if (!lessonTitle || !subject) {
+          showError('يرجى إدخال عنوان الدرس والمادة!');
+          console.error('خطأ: عنوان الدرس أو المادة فارغ');
+          return;
+        }
+
+        if (!fallbackObjectives[subject]) {
+          showError('المادة المختارة غير مدعومة. يرجى اختيار مادة أخرى.');
+          console.error('خطأ: المادة غير مدعومة:', subject);
+          return;
+        }
+
+        const objectives = fallbackObjectives[subject];
+        const generatedObjectives = objectives.slice(0, 3).map((obj, i) => `${i+1}. ${obj.replace('{title}', lessonTitle)}`).join('\n');
+        document.getElementById('objectives').value = generatedObjectives;
+        console.log(`تم توليد أهداف للمادة: ${subject}, العنوان: ${lessonTitle}`);
+        clearError();
+      } catch (error) {
+        console.error('خطأ في توليد الأهداف المحلية:', error);
+        showError('خطأ في توليد الأهداف. تحقق من وحدة التحكم.');
+      }
+    }
+
+    // دالة تعبئة تلقائية
+    function autoFillFields() {
+      try {
+        console.log('بدء التعبئة التلقائية...');
+        const subject = document.getElementById('subject')?.value;
+        const prompt = document.getElementById('aiPrompt')?.value.trim();
+
+        if (!subject) {
+          showError('يرجى اختيار المادة أولاً!');
+          console.error('خطأ: المادة غير محددة');
+          return;
+        }
+
+        if (!suggestionTemplates[subject]) {
+          showError('المادة المختارة غير مدعومة للتعبئة التلقائية.');
+          console.error('خطأ: المادة غير مدعومة للتعبئة:', subject);
+          return;
+        }
+
+        const selectedTemplate = suggestionTemplates[subject];
+
+        const fields = ['academicYear', 'date', 'subject', 'grade', 'lessonTitle', 'objectives', 'activities', 'resources', 'assessment', 'homework'];
+        fields.forEach(field => {
+          const element = document.getElementById(field);
+          if (element) element.value = selectedTemplate[field] || '';
+        });
+
+        if (prompt) {
+          document.getElementById('lessonTitle').value = prompt;
+        }
+
+        console.log(`تم تعبئة الحقول للمادة: ${subject}`);
+        clearError();
+      } catch (error) {
+        console.error('خطأ في التعبئة التلقائية:', error);
+        showError('خطأ في التعبئة التلقائية.');
+      }
+    }
+
+    // دالة فتح التبويبات
+    function openTab(tabId) {
+      try {
+        console.log(`فتح التبويب: ${tabId}`);
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab[onclick="openTab('${tabId}')"]`).classList.add('active');
+        
+        if (tabId === 'saved-tab') displaySavedPlans();
+      } catch (error) {
+        console.error('خطأ في فتح التبويب:', error);
+        showError('خطأ في فتح التبويب.');
+      }
+    }
+
+    // إنشاء الخطة
+    function generatePlan() {
+      try {
+        console.log('بدء إنشاء الخطة...');
+        const fields = ['academicYear', 'date', 'subject', 'grade', 'lessonTitle', 'objectives', 'activities', 'resources', 'assessment', 'homework'];
+        const plan = {};
+        fields.forEach(field => {
+          plan[field] = document.getElementById(field)?.value || '';
+        });
+
+        if (fields.some(field => !plan[field])) {
+          showError('يرجى ملء جميع الحقول!');
+          console.error('خطأ: حقول مفقودة');
+          return;
+        }
+
+        const objectiveCount = plan.objectives.split('\n').filter(line => line.trim().match(/^\d+\./)).length;
+        if (objectiveCount < 3) {
+          showError('يجب أن تحتوي الأهداف على 3 أهداف على الأقل!');
+          console.error('خطأ: عدد الأهداف أقل من 3');
+          return;
+        }
+
+        const output = `
+          <h3>خطة التحضير اليومية</h3>
+          <p><strong>العام الأكاديمي:</strong> ${plan.academicYear}</p>
+          <p><strong>التاريخ:</strong> ${plan.date}</p>
+          <p><strong>المادة:</strong> ${plan.subject}</p>
+          <p><strong>الصف:</strong> ${plan.grade}</p>
+          <p><strong>عنوان الدرس:</strong> ${plan.lessonTitle}</p>
+          <p><strong>الأهداف:</strong></p>
+          <ol>${plan.objectives.split('\n').map(obj => `<li>${obj}</li>`).join('')}</ol>
+          <p><strong>الأنشطة:</strong> ${plan.activities}</p>
+          <p><strong>الموارد:</strong> ${plan.resources}</p>
+          <p><strong>التقييم:</strong> ${plan.assessment}</p>
+          <p><strong>الواجبات:</strong> ${plan.homework}</p>
+        `;
+
+        document.getElementById('output').innerHTML = output;
+        document.getElementById('output').style.display = 'block';
+        console.log('تم إنشاء الخطة بنجاح');
+        clearError();
+      } catch (error) {
+        console.error('خطأ في إنشاء الخطة:', error);
+        showError('خطأ في إنشاء الخطة.');
+      }
+    }
+
+    // حفظ الخطة
+    function savePlan() {
+      try {
+        console.log('بدء حفظ الخطة...');
+        const plan = {
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+          academicYear: document.getElementById('academicYear')?.value,
+          date: document.getElementById('date')?.value,
+          subject: document.getElementById('subject')?.value,
+          grade: document.getElementById('grade')?.value,
+          lessonTitle: document.getElementById('lessonTitle')?.value,
+          objectives: document.getElementById('objectives')?.value
+        };
+
+        let savedPlans = [];
+        try {
+          savedPlans = JSON.parse(localStorage.getItem('savedPlans') || '[]');
+        } catch (e) {
+          console.warn('فشل تحميل savedPlans من localStorage:', e);
+        }
+        savedPlans.push(plan);
+        try {
+          localStorage.setItem('savedPlans', JSON.stringify(savedPlans));
+        } catch (e) {
+          console.warn('فشل حفظ savedPlans إلى localStorage:', e);
+          showError('فشل حفظ الخطة. تحقق من دعم localStorage.');
+          return;
+        }
+        alert('تم حفظ الخطة بنجاح!');
+        displaySavedPlans();
+        console.log('تم حفظ الخطة بنجاح');
+      } catch (error) {
+        console.error('خطأ في حفظ الخطة:', error);
+        showError('خطأ في حفظ الخطة.');
+      }
+    }
+
+    // عرض الخطط المحفوظة
+    function displaySavedPlans() {
+      try {
+        console.log('عرض الخطط المحفوظة...');
+        const savedPlansDiv = document.getElementById('savedPlans');
+        let savedPlans = [];
+        try {
+          savedPlans = JSON.parse(localStorage.getItem('savedPlans') || '[]');
+        } catch (e) {
+          console.warn('فشل تحميل savedPlans من localStorage:', e);
+        }
+        savedPlansDiv.innerHTML = '';
+
+        savedPlans.forEach(plan => {
+          savedPlansDiv.innerHTML += `
+            <div class="plan-card">
+              <h4>${plan.lessonTitle}</h4>
+              <p><strong>المادة:</strong> ${plan.subject}</p>
+              <p><strong>الصف:</strong> ${plan.grade}</p>
+              <p><strong>تاريخ الحفظ:</strong> ${new Date(plan.createdAt).toLocaleDateString('ar-QA')}</p>
+              <button onclick="loadPlan('${plan.id}')" class="success">عرض</button>
+            </div>
+          `;
+        });
+        console.log('تم عرض الخطط المحفوظة');
+      } catch (error) {
+        console.error('خطأ في عرض الخطط:', error);
+        showError('خطأ في عرض الخطط.');
+      }
+    }
+
+    // تحميل خطة
+    function loadPlan(id) {
+      try {
+        console.log(`تحميل الخطة: ${id}`);
+        let savedPlans = [];
+        try {
+          savedPlans = JSON.parse(localStorage.getItem('savedPlans') || '[]');
+        } catch (e) {
+          console.warn('فشل تحميل savedPlans من localStorage:', e);
+        }
+        const plan = savedPlans.find(p => p.id == id);
+        if (!plan) return;
+
+        ['academicYear', 'date', 'subject', 'grade', 'lessonTitle', 'objectives'].forEach(field => {
+          const element = document.getElementById(field);
+          if (element) element.value = plan[field] || '';
+        });
+        openTab('create-tab');
+        console.log(`تم تحميل الخطة: ${id}`);
+      } catch (error) {
+        console.error('خطأ في تحميل الخطة:', error);
+        showError('خطأ في تحميل الخطة.');
+      }
+    }
+
+    // مسح النموذج
+    function resetForm() {
+      try {
+        console.log('مسح النموذج...');
+        ['aiPrompt', 'academicYear', 'date', 'subject', 'grade', 'lessonTitle', 'objectives', 'activities', 'resources', 'assessment', 'homework'].forEach(id => {
+          const element = document.getElementById(id);
+          if (element) element.value = '';
+        });
+        document.getElementById('output').style.display = 'none';
+        console.log('تم مسح النموذج');
+        clearError();
+      } catch (error) {
+        console.error('خطأ في مسح النموذج:', error);
+        showError('خطأ في مسح النموذج.');
+      }
+    }
+
+    // دالة لعرض رسائل الخطأ
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+      console.error('خطأ:', message);
+    }
+
+    // دالة لإخفاء رسائل الخطأ
+    function clearError() {
+      const errorDiv = document.getElementById('errorMessage');
+      if (errorDiv) {
+        errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+      }
+    }
+
+    // تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        console.log('جاري تحميل الصفحة...');
+        displaySavedPlans();
+        clearError();
+        console.log('تم تحميل الصفحة بنجاح');
+      } catch (error) {
+        console.error('خطأ أثناء تحميل الصفحة:', error);
+        showError('خطأ في تحميل الصفحة. تحقق من وحدة التحكم.');
+      }
+    });
+  </script>
+</body>
+</html>
